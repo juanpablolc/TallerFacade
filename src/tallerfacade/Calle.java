@@ -40,11 +40,11 @@ public class Calle implements Componente {
 
   @Override
   public String obtenerInformacion() {
-    return nombre.toUpperCase() + "\n"
-            + "Coordenadas origen: " + coordenadaXOrigen + ", " + coordenadaXDestino + "\n"
-            + "Coordenadas destino: " + coordenadaYOrigen + ", " + coordenadaYDestino + "\n"
-            + "Distancia: " + distancia + "\n"
-            + "Tiempo del recorrido: " + tiempoRecorrido + "\n\n";
+    return this.nombre.toUpperCase() + "\n"
+            + "Coordenadas origen: " + this.coordenadaXOrigen + ", " + this.coordenadaYOrigen + "\n"
+            + "Coordenadas destino: " + this.coordenadaXDestino + ", " + this.coordenadaYDestino + "\n"
+            + "Distancia: " + this.distancia + "\n"
+            + "Tiempo del recorrido: " + this.tiempoRecorrido + "\n";
   }
 
   public String getNombre() {

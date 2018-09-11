@@ -1,29 +1,30 @@
 package tallerfacade;
 
-import java.util.ArrayList;
-
 public abstract class Usuario {
 
-  private String nombre;
   private String correo;
+  private String nombre;
   private String contraseña;
 
-  public void adicionar(String nombre, String correo, String contraseña) {
-    this.setNombre(nombre);
+  /*
+  public Usuario (String correo, String nombre, String contraseña) {
+    this.correo = correo;
+    this.nombre = nombre;
+    this.contraseña = contraseña;
+  }
+   */
+  public void adicionar(String correo, String nombre, String contraseña) {
     this.setCorreo(correo);
+    this.setNombre(nombre);
     this.setContraseña(contraseña);
   }
-
-  public void modificar(String correo, String nombre, String contraseña) {
-    this.setNombre(nombre);
-    this.setCorreo(correo);
-    this.setContraseña(contraseña);
-  }
-
-  abstract public String consultar();
-
-  abstract public String eliminar(String correo);
   
+  public void modificar(String correo, String nombre, String contraseña) {
+    this.correo = correo;
+    this.nombre = nombre;
+    this.contraseña = contraseña;
+  }
+
   protected String getNombre() {
     return nombre;
   }
