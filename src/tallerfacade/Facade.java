@@ -6,6 +6,7 @@ public class Facade {
 
   ArrayList<Usuario> usuarios = new ArrayList<>();
   ArrayList<Ruta> rutas = new ArrayList<>();
+  ArrayList<Reserva> reservas = new ArrayList<>();
 
   // Usuarios
   public String adicionarConductor(String correo, String nombre, String contraseña) {
@@ -41,37 +42,6 @@ public class Facade {
     }
   }
 
-  /*
-  public String[] acceder(String correo, String contraseña) {
-    for (Usuario usuario : this.usuarios) {
-      if (usuario.getCorreo().equals(correo) && usuario.getContraseña().equals(contraseña)) {
-        String[] respuesta = new String[2];
-        if (usuario instanceof Conductor) {
-          respuesta[0] = "conductor";
-        } else if (usuario instanceof Pasajero) {
-          respuesta[0] = "pasajero";
-        } else if (usuario instanceof AdministradorAdapter) {
-          respuesta[0] = "administrador";
-        }
-        respuesta[1] = usuario.getNombre();
-        return respuesta;
-      }
-    }
-
-    return null;
-  }
-   */
- /*
-  public Usuario acceder(String correo, String contraseña) {
-    for (Usuario usuario : this.usuarios) {
-      if (usuario.getCorreo().equals(correo) && usuario.getContraseña().equals(contraseña)) {
-        return usuario;
-      }
-    }
-    
-    return null;
-  }
-   */
   public int acceder(String correo, String contraseña) {
     for (int i = 0; i < this.usuarios.size(); i++) {
       if (this.usuarios.get(i).getCorreo().equals(correo)
@@ -143,10 +113,6 @@ public class Facade {
     return "Calle " + nombre + " añadida exitósamente.";
   }
 
-  public String listarCalles(int idRuta) {
-    return this.rutas.get(idRuta).obtenerInformacion();
-  }
-
   public boolean existenRutasConductor(int idConductor) {
     for (Ruta ruta : this.rutas) {
       if (ruta.getConductor().getCorreo().equals(this.usuarios.get(idConductor).getCorreo())) {
@@ -182,15 +148,92 @@ public class Facade {
     return "Número de ruta no válido.";
   }
 
+  public String eliminarRuta(int idConductor, int numRuta) {
+    int contadorRutasConductor = 1;
+    for (int i = 0; i < this.rutas.size(); i++) {
+      if (this.rutas.get(i).getConductor().getCorreo().equals(this.usuarios.get(idConductor).getCorreo())) {
+        if (contadorRutasConductor == numRuta) {
+          this.rutas.remove(i);
+          return "La ruta ha sido eliminada exitósamente.";
+        }
+        contadorRutasConductor++;
+      }
+    }
+    return "Número de ruta no válido.";
+  }
+
   public boolean existenRutas() {
     return rutas.size() > 0;
   }
 
-  public String listarRutas() {
-    String rutas = "Todas las rutas registradas: ";
+  // Reservas
+  public String registrarReserva(int idRuta, int idPasajero, int puestosReservados) {
+    if (rutas.get(idRuta) != null) {
+      Reserva reserva = new Reserva(idRuta, idPasajero, puestosReservados);
+      this.reservas.add(reserva);
+      return "La reserva ha sido registrada exitósamente.";
+    } else {
+      return "Número de ruta no válido.";
+    }
+  }
 
-    for (Ruta ruta : this.rutas) {
-      rutas += ruta.obtenerInformacion() + "\n";
+  public String listarReservas() {
+    if (this.existenReservas()) {
+      String reservas = "Reservas: \n\n";
+
+      for (int i = 0; i < this.reservas.size(); i++) {
+        reservas += "[" + i + "] Ruta: " + this.rutas.get(this.reservas.get(i).getIdRuta()).getNombre() + " - ";
+        reservas += "Pasajero: " + this.usuarios.get(this.reservas.get(i).getIdPasajero()).getNombre();
+      }
+
+      return reservas;
+    } else {
+      return "No hay reservas registradas.";
+    }
+  }
+
+  public String modificarReserva(int idReserva, int puestosReservados) {
+    if (this.reservas.get(idReserva) != null) {
+      this.reservas.get(idReserva).setPuestosReservados(puestosReservados);
+      return "La reserva ha sido modificada exitósamente.";
+    } else {
+      return "Número de reserva no válido";
+    }
+  }
+
+  public String eliminarReserva(int idReserva) {
+    if (this.reservas.get(idReserva) != null) {
+      this.reservas.remove(idReserva);
+      return "La reserva ha sido eliminada exitósamente.";
+    } else {
+      return "Número de reserva no válido";
+    }
+  }
+
+  public boolean existenReservas() {
+    return this.reservas.size() > 0;
+  }
+
+  // Administrador
+  public boolean existenUsuarios() {
+    return this.usuarios.size() > 0;
+  }
+
+  public String listarUsuarios() {
+    String usuarios = "USUARIOS REGISTRADOS: \n\n";
+
+    for (int i = 0; i < this.usuarios.size(); i++) {
+      usuarios += "(" + this.getTipoUsuario(i) + ") Correo: " + this.usuarios.get(i).getCorreo() + " - Nombre: " + this.usuarios.get(i).getNombre() + " - Contraseña: " + this.usuarios.get(i).getContraseña() + "\n";
+    }
+
+    return usuarios;
+  }
+
+  public String listarRutas() {
+    String rutas = "RUTAS REGISTRADAS: \n\n";
+    
+    for (int i = 0; i < this.rutas.size(); i++) {
+      rutas += "[" + i + "]" + this.rutas.get(i).obtenerInformacion() + "\n";
     }
 
     return rutas;

@@ -58,5 +58,4 @@ public class Ruta implements Componente {
   public void setComponentes(ArrayList<Componente> componentes) {
     this.componentes = componentes;
   }
-
 }

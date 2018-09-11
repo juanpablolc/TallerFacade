@@ -22,7 +22,7 @@ public class Main {
     Facade facade = new Facade();
 
     String mensaje, correo, nombre, contraseña, nombreRuta, nombreCalle;
-    int idRuta, tiempoRecorrido, numRuta;
+    int idRuta, tiempoRecorrido, numRuta, puestosReservados;
     double coordenadaXOrigen, coordenadaYOrigen, coordenadaXDestino, coordenadaYDestino, distancia;
 
     int opcion;
@@ -41,7 +41,7 @@ public class Main {
           int opcion2;
           menu2:
           while (true) {
-            opcion2 = Integer.parseInt(JOptionPane.showInputDialog(null,
+            opcion2 = Integer.parseInt(JOptionPane.showInputDialog(
                     "¿Qué tipo de usuario desea registrar?\n\n"
                     + "1. Conductor\n"
                     + "2. Pasajero\n"
@@ -52,7 +52,7 @@ public class Main {
             if (opcion2 == 0) {
               break;
             }
-            
+
             correo = JOptionPane.showInputDialog("Ingrese el correo institucional: ");
             nombre = JOptionPane.showInputDialog("Ingrese el nombre: ");
             contraseña = JOptionPane.showInputDialog("Ingrese la contraseña: ");
@@ -86,7 +86,7 @@ public class Main {
             JOptionPane.showMessageDialog(null, "Correo o contraseña no válidos.");
             continue;
           }
-          
+
           switch (facade.getTipoUsuario(idUsuario)) {
             case "conductor":
               while (opcion3 != 0) {
@@ -132,7 +132,7 @@ public class Main {
                     break;
                   case 3:
                     if (facade.existenRutasConductor(idUsuario)) {
-                      numRuta = Integer.parseInt(JOptionPane.showInputDialog(null, facade.listarRutasConductor(idUsuario) +"Ingrese el número de la ruta que desea actualizar: "));
+                      numRuta = Integer.parseInt(JOptionPane.showInputDialog(facade.listarRutasConductor(idUsuario) + "Ingrese el número de la ruta que desea actualizar: "));
                       nombreRuta = JOptionPane.showInputDialog("Ingrese el nuevo nombre para la ruta: ");
                       mensaje = facade.actualizarRuta(idUsuario, numRuta, nombreRuta);
                       JOptionPane.showMessageDialog(null, mensaje);
@@ -141,6 +141,13 @@ public class Main {
                     }
                     break;
                   case 4:
+                    if (facade.existenRutasConductor(idUsuario)) {
+                      numRuta = Integer.parseInt(JOptionPane.showInputDialog(facade.listarRutasConductor(idUsuario) + "Ingrese el número de la ruta que desea eliminar: "));
+                      mensaje = facade.eliminarRuta(idUsuario, numRuta);
+                      JOptionPane.showMessageDialog(null, mensaje);
+                    } else {
+                      JOptionPane.showMessageDialog(null, facade.getNombreUsuario(idUsuario) + " no tiene ninguna ruta registrada.");
+                    }
                     break;
                 }
               }
@@ -156,6 +163,29 @@ public class Main {
                         + "4. Eliminar reserva\n\n"
                         + "0. Cerrar sesión"
                 ));
+                switch (opcion3) {
+                  case 1:
+                    idRuta = Integer.parseInt(JOptionPane.showInputDialog(facade.listarRutas() + "Ingrese el número de la ruta que desea reservar: "));
+                    puestosReservados = Integer.parseInt(JOptionPane.showInputDialog("Ingrese la cantidad de puestos que desea reservar: "));
+                    mensaje = facade.registrarReserva(idRuta, idUsuario, puestosReservados);
+                    JOptionPane.showMessageDialog(null, mensaje);
+                    break;
+                  case 2:
+                    mensaje = facade.listarReservas();
+                    JOptionPane.showMessageDialog(null, mensaje);
+                    break;
+                  case 3:
+                    idRuta = Integer.parseInt(JOptionPane.showInputDialog(facade.listarRutas() + "Ingrese el número de la ruta que desea modificar: "));
+                    puestosReservados = Integer.parseInt(JOptionPane.showInputDialog("Ingrese la nueva cantidad de puestos a reservar: "));
+                    mensaje = facade.modificarReserva(idRuta, puestosReservados);
+                    JOptionPane.showMessageDialog(null, mensaje);
+                    break;
+                  case 4:
+                    idRuta = Integer.parseInt(JOptionPane.showInputDialog(facade.listarRutas() + "Ingrese el número de la ruta que desea eliminar: "));
+                    mensaje = facade.eliminarReserva(idRuta);
+                    JOptionPane.showMessageDialog(null, mensaje);
+                    break;
+                }
               }
               break;
             case "administrador":
@@ -163,35 +193,38 @@ public class Main {
                 opcion3 = Integer.parseInt(JOptionPane.showInputDialog(
                         "Bienvenido " + facade.getNombreUsuario(idUsuario) + " (Administrador)\n\n"
                         + "Seleccione una opción: \n\n"
-                        + "1. Registrar calle\n"
-                        + "2. Listar usuarios\n"
-                        + "3. Listar rutas\n"
-                        + "4. Listar reservas\n\n"
+                        + "1. Listar usuarios\n"
+                        + "2. Listar rutas\n"
+                        + "3. Listar reservas\n\n"
                         + "0. Cerrar sesión"
                 ));
 
                 switch (opcion3) {
                   case 1:
-
+                    if (facade.existenUsuarios()) {
+                      JOptionPane.showMessageDialog(null, facade.listarUsuarios());
+                    } else {
+                      JOptionPane.showMessageDialog(null, "No hay ningún usuario registrado.");
+                    }
                     break;
                   case 2:
-
-                    break;
-                  case 3:
                     if (facade.existenRutas()) {
-                      facade.listarRutas();
+                      JOptionPane.showMessageDialog(null, facade.listarRutas());
                     } else {
                       JOptionPane.showMessageDialog(null, "No hay ninguna ruta registrada.");
                     }
                     break;
-                  case 4:
-
+                  case 3:
+                    if (facade.existenReservas()) {
+                      JOptionPane.showMessageDialog(null, facade.listarReservas());
+                    } else {
+                      JOptionPane.showMessageDialog(null, "No hay ninguna reserva registrada.");
+                    }
                     break;
                 }
               }
               break;
           }
-
           break;
         case 0:
           System.exit(0);
